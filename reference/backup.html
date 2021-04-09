@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    	<meta charset="UTF-8">
+    	<title>Title</title>
+    	<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+	<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.0.1/css/bootstrap.css" rel="stylesheet">
+	<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.0.1/js/bootstrap.js"></script>
+	<style>
+		video,canvas{
+			border:2px solid blue
+		}
+
+	</style>
+</head>
+<body>
+<header class="col-xs-12 navbar navbar-default">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="#">
+			面部登记测试
+		</a>
+	</div>
+</header>
+<main div="col-xs-12">
+	<div class="col-xs-6">
+		<video id="video" width="500px" height="500px"></video>
+	</div>
+	<div class="col-xs-6">
+		<canvas id="canvas" width="500px" height="500px"></canvas>
+	</div>
+	<div class="col-xs-6">
+		<button onclick="getVideo()" class="btn btn-primary">打开摄像头</button>
+	</div>
+	<div class="col-xs-6">
+		<button id="close" onclick="closeMedia()">关闭</button>
+		<button onclick="uploadImage()" class="btn btn-primary">上传照片</button>
+	</div>
+		<div class="col-xs-6">
+		<input type="text" value="Kaige2000" id="name">
+	</div>
+
+</main>
+<script>
+    $("#canvas").width($("#video").width())
+    $("#canvas").height($("#video").height())
+
+    function closeMedia() {
+            var video = document.getElementById('video');
+            if (!video.srcObject) return
+            let stream = video.srcObject
+            let tracks = stream.getTracks();
+            tracks.forEach(track => {
+                track.stop()
+            })
+    }
+    //获得video摄像头区域
+    let video = document.getElementById("video");
+    function getVideo() {
+        let constraints = {
+            video: {width: 500, height: 500},
+            audio: true
+        };
+        let promise = navigator.mediaDevices.getUserMedia(constraints);
+        promise.then(function (MediaStream) {
+            video.srcObject = MediaStream;
+            video.play();
+        }).catch(function (PermissionDeniedError) {
+            console.log(PermissionDeniedError);
+        })
+    }
+
+    // 获取视频图像
+    function takePhoto() {
+        // video=document.getElementById("video")
+        canvas=document.getElementById("canvas")
+        picture=canvas.getContext("2d")
+        picture.drawImage(video,0,0,500,500)
+    }
+	//图片发送至后端
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    name = document.getElementById("name").value  //text为文本框的id
+
+    function uploadImage(){
+        canvas.width = 500;
+        canvas.height = 500;
+        context.drawImage(video, 0, 0, 500, 500);
+        var imgData = canvas.toDataURL("image/jpg");
+		name = document.getElementById("name").value;  //text为文本框的id
+        imgData = imgData.replace(/^data:image\/(png|jpg);base64,/,"")
+        //上传到后台。
+        var uploadAjax = $.ajax({
+            type: "post",
+            //后端需要调用的地址
+            url:"/receiveImage/",
+            data: JSON.stringify({"imgData": imgData,"name":name}),
+            contentType:"json/application",
+            //设置超时
+            timeout:10000,
+            async: true,
+            success: function (htmlVal) {
+                //成功后回调
+            },
+            error: function(data) {
+            },
+            //调用执行后调用的函数
+            complete: function (XMLHttpRequest, textStatus) {
+                if(textStatus == 'timeout'){
+                    uploadAjax.abort(); //取消请求
+                    //超时提示：请求超时，请重试
+                    alert("请求超时，请重试")
+                    //请求超时返回首页
+                    closeCard();
+                }
+            }
+        });
+    }
+</script>
+
+<!--<div class="top">-->
+<!--    <div class="recorder" id="recorder" align="center">-->
+<!--&lt;!&ndash;        <button id="record" class="btn">录制视频</button>&ndash;&gt;-->
+<!--&lt;!&ndash;        <button id="stop" class="btn">暂停录制</button>&ndash;&gt;-->
+<!--        <a id="download"></a>-->
+<!--        <script type="text/javascript" src="{{ url_for('static', filename='recorder.js') }}"></script>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<img id="video" src="{{ url_for('home.video_viewer') }}">-->
+
+<!--&lt;!&ndash;必须使用相对路径。&ndash;&gt;-->
+
+<!--<h2>视频测试</h2>-->
+<!--<p align="center">-->
+<!--    <video id="video" controls="controls" autoplay="autoplay" width="1280px" height="720">-->
+<!--    你的浏览器貌似不支持video 元素 %>_<%-->
+<!--    <source src="../static/video/test2.mp4" type="video/mp4">-->
+<!--    </video>-->
+<!--</p>-->
+<!--<h2>图像测试</h2>-->
+<!--<img  src="https://www.runoob.com/images/pulpit.jpg">-->
+</body>
+</html>

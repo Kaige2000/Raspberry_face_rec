@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="">
+
+
+<body>
+    <meta charset="UTF-8">
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <meta http-equiv="X-UA-Compatible" content="ie=edge">-->
+    <title>家庭监控系统</title>
+
+	<style>
+	    video,canvas{border:2px solid blue}
+    </style>
+
+
+<h1 align="center" >家庭监控界面</h1>
+	<style>
+        body {background-color: #484856;}
+    </style>
+<!--<p> align="center" 这里是您的家</p>-->
+<p align="center">请登录您的面部信息</p>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.0.1/css/bootstrap.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.0.1/js/bootstrap.js"></script>
+
+
+
+<main div="col-xs-12">
+	<div class="col-xs-6">
+		<video id="video" width="500px" height="500px"></video>
+	</div>
+	<div class="col-xs-6">
+		<canvas id="canvas" width="500px" height="500px"></canvas>
+	</div>
+	<div class="col-xs-6">
+		<button onclick="getVideo()" class="btn btn-primary">打开摄像头</button>
+	</div>
+	<div class="col-xs-6">
+		<button id="close" onclick="closeMedia()">关闭</button>
+		<button onclick="uploadImage()" class="btn btn-primary">上传照片</button>
+	</div>
+		<div class="col-xs-6">
+		<input type="text" value="Kaige" id="name">
+	</div>
+</main>
+
+<script>
+    $("#canvas").width($("#video").width())
+    $("#canvas").height($("#video").height())
+    // 关闭窗口
+    function closeMedia() {
+            var video = document.getElementById('video');
+            if (!video.srcObject) return
+            let stream = video.srcObject
+            let tracks = stream.getTracks();
+            tracks.forEach(track => {
+                track.stop()
+            })
+    }
+    //打开摄像头
+    let video = document.getElementById("video");
+    function getVideo() {
+        let constraints = {
+            video: {width: 500, height: 500},
+            audio: true
+        };
+        let promise = navigator.mediaDevices.getUserMedia(constraints);
+        promise.then(function (MediaStream) {
+            video.srcObject = MediaStream;
+            video.play();
+        }).catch(function (PermissionDeniedError) {
+            console.log(PermissionDeniedError);
+        })
+    }
+
+	//图片发送至后端
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    name = document.getElementById("name").value  //text为文本框的id
+
+    function uploadImage(){
+        canvas.width = 500;
+        canvas.height = 500;
+        context.drawImage(video, 0, 0, 500, 500);
+        var imgData = canvas.toDataURL();
+		name = document.getElementById("name").value;  //text为文本框的id
+        imgData = imgData.replace(/^data:image\/(png|jpg);base64,/,"")
+        //上传到后台。
+        var uploadAjax = $.ajax({
+            type: "post",
+            //后端地址
+            url:"/receiveImage/",
+            data: JSON.stringify({"imgData": imgData,"name":name}),
+            contentType:"json/application",
+            timeout:10000,
+            async: true,
+            success: function (htmlVal) {
+                //成功后回调
+            },
+            error: function(data) {
+            },
+            //调用执行后调用的函数
+            complete: function (XMLHttpRequest, textStatus) {
+                if(textStatus == 'timeout'){
+                    uploadAjax.abort(); //取消请求
+                    //超时提示：请求超时，请重试
+                    alert("请求超时，请重试")
+                    //请求超时返回首页
+                    closeCard();
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
