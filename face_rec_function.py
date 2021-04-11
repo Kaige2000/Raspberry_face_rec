@@ -29,7 +29,10 @@ def initialization():
     N = 1
 
 
-def compare_label(frame, N, face_locations, face_encodings, face_names):
+def compare_label(frame, N, locations, encodings, face_names):
+    face_locations = locations
+    face_encodings = encodings
+
     small_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
     rgb_small_frame = small_frame[:, :, ::-1]
     # 根据encoding来判断是不是同一个人，是就输出true，不是为flase
@@ -47,10 +50,10 @@ def compare_label(frame, N, face_locations, face_encodings, face_names):
                 name = known_face_names[first_match_index]
             face_names.append(name)
     if N < 10:
-        N = N +1
+        N = N + 1
     if N == 10:
         N = 1
-    print(N)
+
 
     # 将捕捉到的人脸显示出来
     # zip用于打包元组

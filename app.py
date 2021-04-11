@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 
 # CORS(app, supports_credentials=True)
-# 用户基本信息测试
+# 用户基本信息测
 # @app.route('/userProfile', methods=["GET", "POST"])
 # def get_profile():
 #     if request.method =="GET":
