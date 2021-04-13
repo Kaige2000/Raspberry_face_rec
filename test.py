@@ -1,6 +1,8 @@
 def test():
-    a = [1,2,3]
-    return a
+    global a
+    a = []
 
-b = test()
-print(b)
+def test2(b,n):
+    n = a
+    b = [1,2]
+

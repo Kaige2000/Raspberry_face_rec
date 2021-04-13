@@ -42,9 +42,7 @@ li a.active {color: white;background-color: #4CAF50;}
   <li><a class="active" href="new_face">人脸登记</a></li>
   <li><a href="#about">关于</a></li>
 </ul>
-
 </body>
-
 
 <body>
 <h1 align="center" style="color: whitesmoke;"> 录入界面</h1>
@@ -85,11 +83,13 @@ li a.active {color: white;background-color: #4CAF50;}
             })
     }
     //打开摄像头
+    //本地调试 --unsafely-treat-insecure-origin-as-secure="http://ip/new_face/"
     let video = document.getElementById("video");
     function getVideo() {
         let constraints = {
             video: {width: 500, height: 500},
-            audio: true
+            // java bool变量为小写
+            audio: false
         };
         let promise = navigator.mediaDevices.getUserMedia(constraints);
         promise.then(function (MediaStream) {
@@ -99,6 +99,7 @@ li a.active {color: white;background-color: #4CAF50;}
             console.log(PermissionDeniedError);
         })
     }
+
 
 	//图片发送至后端
     var canvas = document.getElementById('canvas');
