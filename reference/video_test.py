@@ -46,7 +46,7 @@ while True:
         for face_encoding in face_encodings:
             # 默认为unknown
             # compare对比待识别向量与已知向量的欧拉距离
-            matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=0.6)
+            matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=0.4)
             name = "Unknown"
             if True in matches:
                 first_match_index = matches.index(True)

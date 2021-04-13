@@ -7,7 +7,6 @@ def initialization():
     global known_face_names
     global face_locations
     global face_encodings
-    global face_names
     global N
 
     KaigeZhu_image = face_recognition.load_image_file("C:\\Users\\Kaige\\OneDrive\\学习\\毕业设计\\FaceDetect\\known\\me.jpg")
@@ -22,4 +21,4 @@ def initialization():
     ]
     face_names = []
     N = 1
-    return known_face_encodings, known_face_names, face_names, N
+    return known_face_encodings, known_face_names, N, face_names

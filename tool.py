@@ -63,13 +63,15 @@ def log_record(path=None, record=None):
 #     N = 1
 
 
+# 识别人脸并显示标签
 def compare_label(frame, N, known_face_encodings, known_face_names, face_names):
-    small_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
+    small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
     rgb_small_frame = small_frame[:, :, ::-1]
     # 根据encoding来判断是不是同一个人，是就输出true，不是为flase
     face_locations = face_recognition.face_locations(rgb_small_frame)
-
+    # 每十帧检测一帧
     if N == 1:
+        face_names = []
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
         for face_encoding in face_encodings:
             # 默认为unknown
@@ -80,19 +82,18 @@ def compare_label(frame, N, known_face_encodings, known_face_names, face_names):
                 first_match_index = matches.index(True)
                 name = known_face_names[first_match_index]
             face_names.append(name)
-    if N < 10:
-        N = N +1
-    if N == 10:
+    if N < 15:
+        N = N + 1
+    if N == 15:
         N = 1
-
-    # 将捕捉到的人脸显示出来
-    # zip用于打包元组
+    # print(N)
+    # 将捕捉到的人脸显示出来 zip用于打包元组
     for (top, right, bottom, left), name in zip(face_locations, face_names):
         # Scale back up face locations since the frame we detected in was scaled to 1/4 size
-        top *= 2
-        right *= 2
-        bottom *= 2
-        left *= 2
+        top *= 4
+        right *= 4
+        bottom *= 4
+        left *= 4
         # 矩形框
         cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
         cv2.rectangle(frame, (right, top), (right, top), (0, 0, 0), 5, cv2.FILLED)
@@ -100,35 +101,32 @@ def compare_label(frame, N, known_face_encodings, known_face_names, face_names):
         cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
         font = cv2.FONT_HERSHEY_DUPLEX
         cv2.putText(frame, name, (left + 5, bottom - 6), font, 1.0, (255, 255, 255), 1)
-    return frame, N
+    return frame, N, face_names
 
 
+# 获取识别后的视频帧
 def get_video():
-    known_face_encodings, known_face_names, face_names, N = data.initialization()
+    known_face_encodings, known_face_names, N, face_names = data.initialization()
     video_capture = cv2.VideoCapture(0)
     log_record(None, "\n准备识别")
     flag = 1
     while True:
         ret, frame = video_capture.read()
-        (frame, N) = compare_label(frame, N, known_face_encodings, known_face_names, face_names)
-        # if flag == 1:
-        #     log_record(None, "\n预处理完成")
+        (frame, N, face_names) = compare_label(frame, N, known_face_encodings, known_face_names, face_names)
         ret, jpeg = cv2.imencode('.jpg', frame)
+        # cv2.imshow("capture", frame)
         frame = jpeg.tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
         if flag == 1:
             log_record(None, "\n视频帧已经发送")
         flag = 0
-
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     video_capture.release()
     cv2.destroyAllWindows()
 
-
-get_video()
-
+# get_video()
 # def video_face_rec(frame):
 #     face_locations = []
 #     face_encodings = []
