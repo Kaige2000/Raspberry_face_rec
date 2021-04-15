@@ -52,20 +52,24 @@ li a.active {color: white;background-color: #4CAF50;}
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <main div="col-xs-12">
         <div class="col-xs-6">
-            <video id="video" width="500px" height="500px"></video>
-        </div>
-        <div class="col-xs-6">
-            <canvas id="canvas" width="500px" height="500px"></canvas>
-        </div>
-        <div class="col-xs-6">
-            <button onclick="getVideo()" class="btn btn-primary">打开摄像头</button>
+            <button onclick="getVideo()" class="btn btn-primary">拍摄</button>
             <button id="close" onclick="closeMedia()">关闭</button>
         </div>
         <div class="col-xs-6">
             <p style="color:#085CD7";>请输入您的姓名后提交</p>
             <input type="text" value="Kaige" id="name">
-            <button onclick="uploadImage()" class="btn btn-primary">上传照片</button>
+            <button onclick="uploadImage()" class="btn btn-primary">上传</button>
         </div>
+        <div class="col-xs-6">
+            <video id="video" width="500px" height="500px"></video>
+        </div>
+        <div class="col-xs-6">
+            <canvas id="canvas" width="500px" height="500px"></canvas>
+        </div>
+
+
+
+
     </main>
 
 
