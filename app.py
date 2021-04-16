@@ -4,15 +4,24 @@
 import base64
 import threading
 import numpy
+import pymongo
 from flask import Flask, render_template, request, Response, jsonify
 from flask_cors import CORS
 import json
 import cv2
+
+# from flask_mongoengine import MongoEngine
 import tool
 
 # from camera_pi import Camera
 
 app = Flask(__name__)
+# app.config['MONGODB_SETTINGS'] = {
+#     'db': 'surveillance',
+#     'host': 'localhost',
+#     'port': 27017
+# }
+# db = MongoEngine(app)
 
 
 # CORS(app, supports_credentials=True)
@@ -31,6 +40,12 @@ app = Flask(__name__)
 #         print(name)
 #         return "收到POST请求2"
 
+# 连接数据库
+# 连接数据库
+client = pymongo.MongoClient("mongodb://localhost:27017/")
+db = client["surveillance"]
+collection = db["user_photo"]
+
 
 # 主页路由
 @app.route('/')  # 主页
@@ -40,29 +55,37 @@ def index():
     return render_template('home.html')
 
 
-
+# 新人脸登记
 @app.route('/new_face/')
 def new_face():
     tool.log_record(None, "\n人脸录入界面已打开")
     return render_template('face_login.html')
 
 
-# 前端向后端发送图片
+# # 前端向后端发送图片
+# @app.route('/receiveImage/', methods=["POST"])
+# def receive_image():
+#     if request.method == "POST":
+#         print("收到POST请求")
+#         data = request.data.decode('utf-8')
+#         json_data = json.loads(data)
+#         name = json_data.get("name")
+#         print("收到的姓名为" + name)
+#         str_image = json_data.get("imgData")
+#         img = base64.b64decode(str_image)
+#         img_np = numpy.fromstring(img, dtype='uint8')
+#         new_img_np = cv2.imdecode(img_np, 1)
+#         cv2.imwrite('C:\\Users\\Kaige\\Desktop\\' + name + ".jpg", new_img_np)
+#         cv2.imwrite('C:\\Users\\Kaige\\PycharmProjects\\pythonProject\\known_name' + name + ".jpg", new_img_np)
+#         print(name + "的图片文件已写入")
+#         tool.log_record(None, "\n" + name + "的图片已经存入")
+#     return Response('upload')
+
+
+# 后端获取图片
 @app.route('/receiveImage/', methods=["POST"])
 def receive_image():
-    if request.method == "POST":
-        print("收到POST请求")
-        data = request.data.decode('utf-8')
-        json_data = json.loads(data)
-        name = json_data.get("name")
-        print("收到的姓名为" + name)
-        str_image = json_data.get("imgData")
-        img = base64.b64decode(str_image)
-        img_np = numpy.fromstring(img, dtype='uint8')
-        new_img_np = cv2.imdecode(img_np, 1)
-        cv2.imwrite('C:\\Users\\Kaige\\Desktop\\' + name + ".jpg", new_img_np)
-        print(name + "的图片文件已写入")
-        tool.log_record(None, "\n" + name + "的图片已经存入")
+    tool.deposit_image(collection)
     return Response('upload')
 
 
