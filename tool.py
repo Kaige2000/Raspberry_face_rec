@@ -1,7 +1,7 @@
 import base64
 import time
 import cv2
-import numpy
+import numpy as np
 import data
 import face_recognition
 from flask import request
@@ -21,9 +21,6 @@ import json
 # #     os.system(r"touch {}".format(path))#调用系统命令行来创建文件
 
 # 获取操作时间
-
-import numpy as np
-
 
 def get_time(localtime=None):
     localtime = time.asctime(time.localtime(time.time()))
@@ -45,33 +42,6 @@ def log_record(path=None, record=None):
     f.close()
 
 
-# 初始化 测试用
-# def initialization():
-#     global known_face_encodings
-#     global known_face_names
-#     global face_locations
-#     global face_encodings
-#     global face_names
-#     global N
-#
-#     KaigeZhu_image = face_recognition.load_image_file("C:\\Users\\Kaige\\OneDrive\\学习\\毕业设计\\FaceDetect\\known\\me.jpg")
-#     KaigeZhu_face_encoding = face_recognition.face_encodings(KaigeZhu_image)[0]
-#
-#     known_face_encodings = [
-#         KaigeZhu_face_encoding,
-#     ]
-#
-#     known_face_names = [
-#         "KaigeZhu",
-#     ]
-#     face_locations = []
-#     face_encodings = []
-#     face_names = []
-#     N = 1
-
-
-# 识别人脸并显示标签
-
 # 识别人脸并标记
 def compare_label(frame, N, known_face_encodings, known_face_names, face_names):
     small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
@@ -85,6 +55,7 @@ def compare_label(frame, N, known_face_encodings, known_face_names, face_names):
         for face_encoding in face_encodings:
             '''
             compare对比待识别向量与已知向量的欧拉距离
+            
             向量的相似度判定
             1. 欧氏距离
             2. 曼哈顿距离
@@ -93,6 +64,11 @@ def compare_label(frame, N, known_face_encodings, known_face_names, face_names):
             5. 标准化欧氏距离
             6. 马氏距离
             7. 夹角余弦
+            
+            其他的分类器
+            KNN分类器
+            SVM分类器
+            贝叶斯分类器
             '''
             matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=0.4)
             # 标签默认为unknown
@@ -156,7 +132,7 @@ def deposit_image(collection_name):
         print("收到的姓名为" + name)
         str_image = json_data.get("imgData")
         img = base64.b64decode(str_image)
-        img_np = numpy.fromstring(img, dtype='uint8')
+        img_np = np.fromstring(img, dtype='uint8')
         new_img_np = cv2.imdecode(img_np, 1)
         # cv2.imwrite('C:\\Users\\Kaige\\Desktop\\' + name + ".jpg", new_img_np)
         save_address = 'C:\\Users\\Kaige\\PycharmProjects\\pythonProject\\known_name\\'
