@@ -102,7 +102,7 @@ def compare_label(frame, N, known_face_encodings, known_face_names, face_names):
 # 获取识别后的视频帧
 def get_video():
     known_face_encodings, known_face_names, N, face_names = data.initialization()
-    video_capture = cv2.VideoCapture(1)
+    video_capture = cv2.VideoCapture(0)
     log_record(None, "\n准备识别")
     flag = 1
     while True:
