@@ -2,15 +2,9 @@
 # _*_ coding:GBK _*_
 # 摄像头头像识别
 import base64
-import threading
-import numpy
+
 import pymongo
 from flask import Flask, render_template, request, Response, jsonify
-from flask_cors import CORS
-import json
-import cv2
-
-# from flask_mongoengine import MongoEngine
 import tool
 
 # from camera_pi import Camera

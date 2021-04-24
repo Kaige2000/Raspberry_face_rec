@@ -49,6 +49,7 @@ while True:
             matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=0.4)
             name = "Unknown"
             if True in matches:
+                # index() 函数用于从列表中找出某个值第一个匹配项的索引位置
                 first_match_index = matches.index(True)
                 name = known_face_names[first_match_index]
             face_names.append(name)

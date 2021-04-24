@@ -7,11 +7,13 @@ from PIL import Image
 import face_recognition
 
 # 将jpg文件加载到numpy 数组中
-image = face_recognition.load_image_file("C:\\Users\\Kaige\\OneDrive\\学习\\毕业设计\\FaceDetect\\unknown\\us.jpg")
+image = face_recognition.load_image_file("C:\\Users\\Kaige\\OneDrive\\学习\\毕业设计\\FaceDetect\\备份\\s1\\2.png")
 
 # 使用默认的给予HOG模型查找图像中所有人脸
 # 这个方法已经准确了，但还是不如CNN模型那么准确，因为没有使用GPU加速(树莓派没有单独的GPU，后续可以考虑使用因特尔神经棒)
-face_locations = face_recognition.face_locations(image)
+if len(face_recognition.face_locations(image)) == 0:
+    print('CPU wrong;using GPU')
+    face_locations = face_recognition.face_locations(image, model="cnn")
 
 # 使用CNN模型
 # face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=0, model="cnn")

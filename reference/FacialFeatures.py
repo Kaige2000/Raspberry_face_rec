@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 import face_recognition
 
 # 将jpg文件加载到numpy 数组中
-image = face_recognition.load_image_file("C:\\Users\\Kaige\\OneDrive\\学习\\毕业设计\\FaceDetect\\unknown\\us.jpg")
+image = face_recognition.load_image_file("C:\\Users\\Kaige\\Desktop\\images.jpg")
 
 # 查找图像中所有面部的所有面部特征
 face_landmarks_list = face_recognition.face_landmarks(image)
