@@ -8,8 +8,6 @@ def initialization():
     # 本地图片
     global known_face_encodings
     global known_face_names
-    global face_locations
-    global face_encodings
     global face_names
     global N
 
@@ -29,21 +27,17 @@ def initialization():
     N = 1
 
 
-def compare_label(frame, N, locations, encodings, face_names):
-    face_locations = locations
-    face_encodings = encodings
-
+def compare_label(frame, N, face_names):
     small_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
     rgb_small_frame = small_frame[:, :, ::-1]
     # 根据encoding来判断是不是同一个人，是就输出true，不是为flase
     face_locations = face_recognition.face_locations(rgb_small_frame)
-
     if N == 1:
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
         for face_encoding in face_encodings:
             # 默认为unknown
             # compare对比待识别向量与已知向量的欧拉距离
-            matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=0.4)
+            matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=0.6)
             name = "Unknown"
             if True in matches:
                 first_match_index = matches.index(True)
@@ -53,7 +47,6 @@ def compare_label(frame, N, locations, encodings, face_names):
         N = N + 1
     if N == 10:
         N = 1
-
 
     # 将捕捉到的人脸显示出来
     # zip用于打包元组
@@ -73,13 +66,12 @@ def compare_label(frame, N, locations, encodings, face_names):
     return frame, N
 
 
-
-
 initialization()
+
 video_capture = cv2.VideoCapture(0)
 while True:
     ret, frame = video_capture.read()
-    (frame, N) = compare_label(frame, N, face_locations, face_encodings,face_names)
+    (frame, N) = compare_label(frame, N, face_names)
     cv2.imshow("test", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

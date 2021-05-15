@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import face_recognition
 
-# 初始化
+# 初始化， 测试用
 def initialization():
     global known_face_encodings
     global known_face_names

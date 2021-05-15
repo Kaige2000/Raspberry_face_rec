@@ -1,0 +1,78 @@
+<script src="../../static/js/jquery-3.5.1.min.js"></script>
+<script src="../../static/js/bootstrap.min.js"></script>
+<link href="../../static/css/bootstrap.css" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>监控系统</title>
+    <style>
+        body {
+            background-color: #8D9EB7;
+        }
+    </style>
+
+
+<style>
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #e7e7e7;
+    background-color: #f3f3f3;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: #666;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+li a.active {
+    color: white;
+    background-color: #4CAF50;
+}
+</style>
+</head>
+<body>
+
+<ul>
+  <li><a href="../home">主页</a></li>
+  <li><a class="active" href="monitor">监控画面</a></li>
+  <li><a href="../new_face">人脸登记</a></li>
+  <li><a href="#about">关于</a></li>
+</ul>
+
+</body>
+
+<body>
+<h1 align="center" style="color: whitesmoke;">监控界面</h1>
+<p align="center">（测试）</p>
+
+<div align="center">
+    <img src="{{ url_for('front.video_stream') }}" width="800" height="500">
+</div>
+
+
+
+<!--<html xmlns="http://www.w3.org/1999/xhtml">-->
+
+<!--<meta charset="utf-8" />-->
+<!--<title>图片横向居中</title>-->
+<!--<div align="center"><img src="http://www.divcss5.com/img201305/divcss5-logo-201305.gif" /></div>-->
+
+</body>
+</html>
