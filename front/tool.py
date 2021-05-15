@@ -43,7 +43,7 @@ def compare_label(frame, N, known_face_encodings, known_face_names, face_names):
         for face_encoding in face_encodings:
             '''
             compare对比待识别向量与已知向量的欧拉距离
-            
+
             向量的相似度判定
             1. 欧氏距离
             2. 曼哈顿距离
@@ -52,7 +52,7 @@ def compare_label(frame, N, known_face_encodings, known_face_names, face_names):
             5. 标准化欧氏距离
             6. 马氏距离
             7. 夹角余弦
-            
+
             其他的分类器
             KNN分类器
             SVM分类器
@@ -109,8 +109,8 @@ def get_video():
     cv2.destroyAllWindows()
 
 
-def deposit_image(collection_name):
-    collection = collection_name
+def deposit_image():
+    # collection = collection_name
     if request.method == "POST":
         print("收到POST请求")
         data = request.data.decode('utf-8')
@@ -125,17 +125,11 @@ def deposit_image(collection_name):
         img_np = np.fromstring(img, dtype='uint8')
         new_img_np = cv2.imdecode(img_np, 1)
             # 图像存储地址
-        save_address = 'C:\\Users\\Kaige\\PycharmProjects\\pythonProject\\known_name\\'
+        save_address = '/home/pi/PycharmProjects/Raspberry_face_rec/known_name/'
 
         # 存储图像
-        cv2.imwrite(save_address + name + ".jpg", new_img_np)
-
-        log_record(None, "\n" + name + "的图片已经存入服务器本地")
-
-        picture_address = {"name": name, "photo_address": save_address}
-
-        collection.insert_one(picture_address)
-        log_record(None, "\n" + name + "的图片地址已经存入数据库")
+        cv2.imwrite(save_address+ name + ".jpg", new_img_np)
+        print("save")
 
 
 def compare_face():

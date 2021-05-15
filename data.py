@@ -9,7 +9,7 @@ def initialization():
     global face_encodings
     global N
 
-    KaigeZhu_image = face_recognition.load_image_file("C:\\Users\\Kaige\\OneDrive\\学习\\毕业设计\\FaceDetect\\known\\me.jpg")
+    KaigeZhu_image = face_recognition.load_image_file("/home/pi/PycharmProjects/Raspberry_face_rec/known_name/Kaige.jpg")
     KaigeZhu_face_encoding = face_recognition.face_encodings(KaigeZhu_image)[0]
 
     known_face_encodings = [

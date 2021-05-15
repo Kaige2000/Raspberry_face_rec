@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import pymongo
+# import pymongo
 from flask import Blueprint, render_template, Response, session, redirect, url_for, flash
 from . import tool
 
@@ -7,10 +7,10 @@ from . import tool
 # 设定蓝图，并指定模板目录
 front = Blueprint('front', __name__, template_folder='templates')
 
-# 连接数据库测试
-client = pymongo.MongoClient("mongodb://localhost:27017/")
-db = client["surveillance"]
-collection = db["user_photo"]
+# # 连接数据库测试
+# client = pymongo.MongoClient("mongodb://localhost:27017/")
+# db = client["surveillance"]
+# collection = db["user_photo"]
 
 
 # 主页路由, 引用函数名
@@ -38,8 +38,8 @@ def new_face():
 # 后端获取图片
 @front.route('/receive_Image/', methods=["POST"])
 def receive_image():
-    tool.deposit_image(collection)
-    print('deal picture')
+    tool.deposit_image()
+    # print('deal picture')
     return Response('up')
 
 
