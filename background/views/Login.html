@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!--<script src="../../static/js/jquery-3.5.1.min.js"></script>-->
+<script src="../../static/js/bootstrap.min.js"></script>
+<link href="../../static/css/bootstrap.css" rel="stylesheet">
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>登录界面</title>
+</head>
+
+<body>
+<!--设定触发方式，为method-->
+    <form action="/login" method="post">
+
+      <div class="form-group">
+        <input type="text", name="username", placeholder="请输入用户名" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <input type="password", name="password", placeholder="请输入密码" class="form-control">
+      </div>
+
+      <div class="form-group">
+          <input type="submit" value="submit" class="btn btn-default">
+      </div>
+   </form>
+
+
+    <!--显示登录成功与否-->
+    {% for color, message in get_flashed_messages(with_categories = true) %}
+        <div class="alert alert-{{color}} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <p>{{message}}</p>
+            <strong>Warning!</strong> you can't visit this wite
+        </div>
+    {% endfor %}
+
+
+
+</body>
+
+</html>
