@@ -1,15 +1,70 @@
-# -*- coding: utf-8 -*-
 # _*_ coding:GBK _*_
-# æ‘„åƒå¤´å¤´åƒè¯†åˆ«
-import base64
+# coding: utf-8
+from flask import Flask, session
+from front.front import front as front_blueprint
+from background.background import background as background_blueprint
 
-import pymongo
-from flask import Flask, render_template, request, Response, jsonify
-import tool
-
-# from camera_pi import Camera
-
+# ´´½¨APP
 app = Flask(__name__)
+
+# Éú³Ésecret key£¬·ÀÖ¹CSR¹¥»÷
+app.config['SECRET_KEY'] = '6d7f8h329rfjf'
+
+# ×¢²áÀ¶Í¼
+app.register_blueprint(front_blueprint)
+app.register_blueprint(background_blueprint)
+
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", debug=True)
+
+
+# # Ö÷Ò³Â·ÓÉ
+# @app.route('/')  # Ö÷Ò³
+# def index():
+#     # jinja2Ä£°å£¬¾ßÌå¸ñÊ½±£´æÔÚindex.htmlÎÄ¼şÖĞ
+#     tool.log_record(None, "\nÖ÷Ò³ÒÑ´ò¿ª")
+#     return render_template('home.html')
+
+
+# # ĞÂÈËÁ³µÇ¼Ç
+# @app.route('/new_face/')
+# def new_face():
+#     tool.log_record(None, "\nÈËÁ³Â¼Èë½çÃæÒÑ´ò¿ª")
+#     return render_template('face_login.html')
+#
+#
+# # ºó¶Ë»ñÈ¡Í¼Æ¬
+# @app.route('/receive_Image/', methods=["POST"])
+# def receive_image(collection):
+#     tool.deposit_image(collection)
+#     print('´¦ÀíÍ¼Æ¬')
+#     return Response('up')
+
+
+# # ¶Ô±ÈÍ¼Æ¬ĞÅÏ¢£¬ÊÇ·ñÖØ¸´
+# @app.route('/compareImage/', methods=["POST"])
+# def compareImage():
+#     # print(tool.compare_face())
+#     result = tool.compare_face()
+#     return render_template('face_login.html', result_list=result)
+#
+#
+# # ¼àÊÓÆ÷Â·ÓÉ
+# @app.route('/monitor/')
+# def monitor():
+#     print("ÍøÒ³¼à¿Ø½çÃæÒÑ´ò¿ª")
+#     tool.log_record(None, "\nÍøÒ³¼à¿Ø½çÃæÒÑ´ò¿ª")
+#     return render_template('monitor.html')
+#
+#
+# # ¼à¿ØÊÓÆµ½Ó¿Ú
+# @app.route('/video_stream/')
+# def video_stream():
+#     tool.log_record(None, "\nÊÕµ½Ç°¶ËÊÓÆµÁ÷·¢ËÍÇëÇó")
+#     return Response(tool.get_video(), mimetype="multipart/x-mixed-replace; boundary=frame")
+
+
 # app.config['MONGODB_SETTINGS'] = {
 #     'db': 'surveillance',
 #     'host': 'localhost',
@@ -17,86 +72,18 @@ app = Flask(__name__)
 # }
 # db = MongoEngine(app)
 
-
 # CORS(app, supports_credentials=True)
-# ç”¨æˆ·åŸºæœ¬ä¿¡æ¯æµ‹
+# ÓÃ»§»ù±¾ĞÅÏ¢²â
 # @app.route('/userProfile', methods=["GET", "POST"])
 # def get_profile():
-#     if request.method =="GET":
+#     if request.method == "GET":
 #         name = request.args.get('name', '')
-#         # å‰ç«¯å¯ç”¨ userProfile?name = xxxè·å¾—ç›¸åº”ä¿¡æ¯
-#         tool.log_record(None, "\nå‰ç«¯å‘é€å§“åè¯·æ±‚ï¼ˆGETï¼‰")
+#         # Ç°¶Ë¿ÉÓÃ userProfile?name = xxx»ñµÃÏàÓ¦ĞÅÏ¢
+#         tool.log_record(None, "\nÇ°¶Ë·¢ËÍĞÕÃûÇëÇó£¨GET£©")
 #         userProfile = {'name': "Kaige", 'password': 123456}
-#         return userProfile
+#         return render_template('test.html', data=userProfile)
 #     elif request.method == "POST":
-#         tool.log_record(None, "\nå‰ç«¯å‘é€å§“åè¯·æ±‚ï¼ˆPOSTï¼‰")
-#         name = request.json.get()
-#         print(name)
-#         return "æ”¶åˆ°POSTè¯·æ±‚2"
-
-# è¿æ¥æ•°æ®åº“
-# è¿æ¥æ•°æ®åº“
-client = pymongo.MongoClient("mongodb://localhost:27017/")
-db = client["surveillance"]
-collection = db["user_photo"]
-
-
-# ä¸»é¡µè·¯ç”±
-@app.route('/')  # ä¸»é¡µ
-def index():
-    # jinja2æ¨¡æ¿ï¼Œå…·ä½“æ ¼å¼ä¿å­˜åœ¨index.htmlæ–‡ä»¶ä¸­
-    tool.log_record(None, "\nä¸»é¡µå·²æ‰“å¼€")
-    return render_template('home.html')
-
-
-# æ–°äººè„¸ç™»è®°
-@app.route('/new_face/')
-def new_face():
-    tool.log_record(None, "\näººè„¸å½•å…¥ç•Œé¢å·²æ‰“å¼€")
-    return render_template('face_login.html')
-
-
-# # å‰ç«¯å‘åç«¯å‘é€å›¾ç‰‡
-# @app.route('/receiveImage/', methods=["POST"])
-# def receive_image():
-#     if request.method == "POST":
-#         print("æ”¶åˆ°POSTè¯·æ±‚")
-#         data = request.data.decode('utf-8')
-#         json_data = json.loads(data)
-#         name = json_data.get("name")
-#         print("æ”¶åˆ°çš„å§“åä¸º" + name)
-#         str_image = json_data.get("imgData")
-#         img = base64.b64decode(str_image)
-#         img_np = numpy.fromstring(img, dtype='uint8')
-#         new_img_np = cv2.imdecode(img_np, 1)
-#         cv2.imwrite('C:\\Users\\Kaige\\Desktop\\' + name + ".jpg", new_img_np)
-#         cv2.imwrite('C:\\Users\\Kaige\\PycharmProjects\\pythonProject\\known_name' + name + ".jpg", new_img_np)
-#         print(name + "çš„å›¾ç‰‡æ–‡ä»¶å·²å†™å…¥")
-#         tool.log_record(None, "\n" + name + "çš„å›¾ç‰‡å·²ç»å­˜å…¥")
-#     return Response('upload')
-
-
-# åç«¯è·å–å›¾ç‰‡
-@app.route('/receiveImage/', methods=["POST"])
-def receive_image():
-    tool.deposit_image(collection)
-    return Response('upload')
-
-
-# ç›‘è§†å™¨è·¯ç”±
-@app.route('/monitor/')
-def monitor():
-    print("ç½‘é¡µç›‘æ§ç•Œé¢å·²æ‰“å¼€")
-    tool.log_record(None, "\nç½‘é¡µç›‘æ§ç•Œé¢å·²æ‰“å¼€")
-    return render_template('monitor.html')
-
-
-# ç›‘æ§è§†é¢‘æ¥å£
-@app.route('/video_stream/')
-def video_stream():
-    tool.log_record(None, "\næ”¶åˆ°å‰ç«¯è§†é¢‘æµå‘é€è¯·æ±‚")
-    return Response(tool.get_video(), mimetype="multipart/x-mixed-replace; boundary=frame")
-
-
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True)
+#         tool.log_record(None, "\nÇ°¶Ë·¢ËÍĞÕÃûÇëÇó£¨POST£©")
+#         # name = request.json.get()
+#         # print(name)
+#         return "ÊÕµ½POSTÇëÇó2"
